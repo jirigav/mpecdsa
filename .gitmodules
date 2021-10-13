@@ -1,0 +1,9 @@
+[submodule "bulletproofs"]
+	path = bulletproofs
+	url = https://github.com/ZenGo-X/bulletproofs
+[submodule "centipede"]
+	path = centipede
+	url = https://github.com/ZenGo-X/centipede
+[submodule "multi-party-ecdsa"]
+	path = multi-party-ecdsa
+	url = https://github.com/ZenGo-X/multi-party-ecdsa
