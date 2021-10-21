@@ -7,3 +7,6 @@
 [submodule "multi-party-ecdsa"]
 	path = multi-party-ecdsa
 	url = https://github.com/ZenGo-X/multi-party-ecdsa
+[submodule "curv"]
+	path = curv
+	url = https://github.com/ZenGo-X/curv
