@@ -13,3 +13,6 @@
 [submodule "rust-paillier"]
 	path = rust-paillier
 	url = https://github.com/ZenGo-X/rust-paillier/
+[submodule "zk-paillier"]
+	path = zk-paillier
+	url = https://github.com/ZenGo-X/zk-paillier
