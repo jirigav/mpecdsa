@@ -10,3 +10,6 @@
 [submodule "curv"]
 	path = curv
 	url = https://github.com/ZenGo-X/curv
+[submodule "rust-paillier"]
+	path = rust-paillier
+	url = https://github.com/ZenGo-X/rust-paillier/
