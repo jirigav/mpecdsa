@@ -1,0 +1,33 @@
+[package]
+name = "mpecdsa"
+version = "0.1.0"
+edition = "2018"
+
+
+[profile.release]
+lto = true
+
+[lib]
+crate-type = ["lib"]
+name = "mpecdsa"
+
+[features]
+default = ["curv/num-bigint"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+p256 = { version = "0.5.2", features = ["ecdsa"] }
+time="*"
+
+[dependencies.multi-party-ecdsa]
+path = "./multi-party-ecdsa"
+default-features = false
+
+[dependencies.curv]
+path = "./curv"
+default-features = false
+
+[dependencies.paillier]
+path = "./rust-paillier"
+default-features = false
