@@ -13,3 +13,6 @@
 [submodule "zk-paillier"]
 	path = zk-paillier
 	url = https://github.com/ZenGo-X/zk-paillier
+[submodule "bulletproofs"]
+	path = bulletproofs
+	url = https://github.com/ZenGo-X/bulletproofs
