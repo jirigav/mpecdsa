@@ -1,6 +1,3 @@
-[submodule "bulletproofs"]
-	path = bulletproofs
-	url = https://github.com/ZenGo-X/bulletproofs
 [submodule "centipede"]
 	path = centipede
 	url = https://github.com/ZenGo-X/centipede
