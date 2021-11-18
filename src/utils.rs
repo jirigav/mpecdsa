@@ -15,6 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-mod sign;
-mod key_gen;
-mod utils;
+use curv::elliptic::curves::p256::{FE, GE};
+use curv::elliptic::curves::traits::ECPoint;
+use curv::elliptic::curves::traits::ECScalar;
+
+
+/*
+check validity of ECDSA signature on the P256 curve
+*/
+#[allow(dead_code)]
+pub fn check_sig(r: &FE, s: &FE, msg: String, pk: &GE) {
+    use p256::ecdsa::Signature;
+    use p256::ecdsa::{VerifyKey, signature::Verifier};
+
+    let public_key : VerifyKey = pk.get_element();
+    let signature : Signature = Signature::from_scalars(r.get_element(), s.get_element()).unwrap();
+
+
+    let is_correct = public_key.verify(msg.as_bytes(), &signature).is_ok();
+    assert!(is_correct);
+
+}

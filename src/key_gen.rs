@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Jiří Gavenda
+Copyright 2021
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ use multi_party_ecdsa::protocols::multi_party_ecdsa::gg_2018::party_i::{
 };
 use paillier::EncryptionKey;
 
+#[allow(dead_code)]
 pub struct KeyGenContext1 {
     params: Parameters,
     index: u16,
@@ -34,8 +35,10 @@ pub struct KeyGenContext1 {
     decom_i: KeyGenDecommitMessage1
 }
 
+#[allow(dead_code)]
 pub type KeyGenMsg1 = KeyGenBroadcastMessage1;
 
+#[allow(dead_code)]
 pub struct KeyGenContext2 {
     params: Parameters,
     index: u16,
@@ -45,8 +48,10 @@ pub struct KeyGenContext2 {
 
 }
 
+#[allow(dead_code)]
 pub type KeyGenMsg2 = KeyGenDecommitMessage1;
 
+#[allow(dead_code)]
 pub struct KeyGenContext3 {
     params: Parameters,
     index: u16,
@@ -58,8 +63,10 @@ pub struct KeyGenContext3 {
     point_vec: Vec<GE>,
 }
 
+#[allow(dead_code)]
 pub type KeyGenMsg3 = FE;
 
+#[allow(dead_code)]
 pub struct KeyGenContext4 {
     params: Parameters,
     index: u16,
@@ -71,8 +78,10 @@ pub struct KeyGenContext4 {
     party_shares: Vec<FE>,
 }
 
+#[allow(dead_code)]
 pub type KeyGenMsg4 = VerifiableSS<GE>;
 
+#[allow(dead_code)]
 pub struct KeyGenContext5 {
     params: Parameters,
     index: u16,
@@ -85,22 +94,25 @@ pub struct KeyGenContext5 {
     dlog_proof: DLogProof<GE>
 }
 
+#[allow(dead_code)]
 pub type KeyGenMsg5 = DLogProof<GE>;
 
+#[allow(dead_code)]
 pub struct SignContext {
-    threshold: u16,
-    index: u16,
-    party_keys: Keys,
-    vss_scheme_vec: Vec<VerifiableSS<GE>>,
-    shared_keys: SharedKeys,
-    paillier_key_vec: Vec<EncryptionKey>,
-    y_sum: GE,
+    pub threshold: u16,
+    pub index: u16,
+    pub party_keys: Keys,
+    pub vss_scheme_vec: Vec<VerifiableSS<GE>>,
+    pub shared_keys: SharedKeys,
+    pub paillier_key_vec: Vec<EncryptionKey>,
+    pub y_sum: GE,
 }
 
 /*
 Generate keys
 */
 
+#[allow(dead_code)]
 pub fn key_gen_1(parties : u16, threshold : u16, index : u16) -> (KeyGenMsg1, KeyGenContext1) {
     let params = Parameters {
         threshold: threshold - 1,
@@ -120,6 +132,7 @@ pub fn key_gen_1(parties : u16, threshold : u16, index : u16) -> (KeyGenMsg1, Ke
     (bc_i, context1)
 }
 
+#[allow(dead_code)]
 pub fn key_gen_2(messages: Vec<KeyGenMsg1>, context: KeyGenContext1) -> (KeyGenMsg2, KeyGenContext2) {
     let (bc_i, decom_i) = (context.bc_i, context.decom_i);
 
@@ -139,8 +152,9 @@ pub fn key_gen_2(messages: Vec<KeyGenMsg1>, context: KeyGenContext1) -> (KeyGenM
 
 
 /*
-Messages from this function should be sent over an encrypted channel 
+Messages from this function should be sent over an encrypted channel
 */
+#[allow(dead_code)]
 pub fn key_gen_3(messages: Vec<KeyGenMsg2>, context: KeyGenContext2) -> (Vec<KeyGenMsg3>, KeyGenContext3) {
 
     let mut j = 0;
@@ -184,7 +198,7 @@ pub fn key_gen_3(messages: Vec<KeyGenMsg2>, context: KeyGenContext2) -> (Vec<Key
     (messages_output, context3)
 }
 
-
+#[allow(dead_code)]
 pub fn key_gen_4(messages: Vec<KeyGenMsg3>, context: KeyGenContext3) -> (KeyGenMsg4, KeyGenContext4) {
     let mut party_shares = messages;
     party_shares.insert(context.index as usize, context.secret_shares[context.index as usize]);
@@ -203,6 +217,7 @@ pub fn key_gen_4(messages: Vec<KeyGenMsg3>, context: KeyGenContext3) -> (KeyGenM
     (context4.vss_scheme.clone(), context4)
 }
 
+#[allow(dead_code)]
 pub fn key_gen_5(messages: Vec<KeyGenMsg4>, context: KeyGenContext4) -> (KeyGenMsg5, KeyGenContext5) {
     let mut vss_scheme_vec: Vec<VerifiableSS<GE>> = messages;
     vss_scheme_vec.insert(context.index as usize, context.vss_scheme.clone());
@@ -232,6 +247,7 @@ pub fn key_gen_5(messages: Vec<KeyGenMsg4>, context: KeyGenContext4) -> (KeyGenM
     (context5.dlog_proof.clone(), context5)
 }
 
+#[allow(dead_code)]
 pub fn key_gen_6(messages: Vec<KeyGenMsg5>, context: KeyGenContext5) -> SignContext{
 
     let bc1_vec = context.bc1_vec;
