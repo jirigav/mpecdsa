@@ -21,13 +21,16 @@ p256 = { version = "0.5.2", features = ["ecdsa"] }
 time="*"
 
 [dependencies.multi-party-ecdsa]
-path = "./multi-party-ecdsa"
+git = "https://github.com/jirigav/multi-party-ecdsa"
+branch= "p256"
 default-features = false
 
 [dependencies.curv]
-path = "./curv"
+git = "https://github.com/jirigav/curv"
+branch= "p256fix"
 default-features = false
 
 [dependencies.paillier]
-path = "./rust-paillier"
+git = "https://github.com/jirigav/rust-paillier"
+branch= "p256"
 default-features = false
