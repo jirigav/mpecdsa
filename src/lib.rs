@@ -15,6 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-mod sign;
-mod key_gen;
-mod utils;
+pub mod sign;
+pub mod key_gen;
+pub mod utils;

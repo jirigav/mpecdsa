@@ -32,11 +32,12 @@ use multi_party_ecdsa::protocols::multi_party_ecdsa::gg_2018::party_i::{
 use paillier::EncryptionKey;
 use multi_party_ecdsa::utilities::mta::*;
 use crate::key_gen::SignContext;
+use serde::{Serialize, Deserialize};
 
 /*
 Sign data
 */
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext1 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -53,10 +54,9 @@ pub struct SignContext1 {
     decommit: SignDecommitPhase1
 }
 
-#[allow(dead_code)]
 pub type SignMsg1 = (SignBroadcastPhase1, MessageA);
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext2 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -74,10 +74,9 @@ pub struct SignContext2 {
     ni_vec: Vec<FE>
 }
 
-#[allow(dead_code)]
 pub type SignMsg2 = (MessageB, MessageB);
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext3 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -93,10 +92,9 @@ pub struct SignContext3 {
     sigma: FE
 }
 
-#[allow(dead_code)]
 pub type SignMsg3 = FE;
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext4 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -112,10 +110,9 @@ pub struct SignContext4 {
     delta_inv: FE
 }
 
-#[allow(dead_code)]
 pub type SignMsg4 = SignDecommitPhase1;
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext5 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -129,10 +126,9 @@ pub struct SignContext5 {
     r: GE
 }
 
-#[allow(dead_code)]
 pub type SignMsg5 = Phase5Com1;
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext6 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -146,10 +142,9 @@ pub struct SignContext6 {
     commit5a_vec: Vec<Phase5Com1>
 }
 
-#[allow(dead_code)]
 pub type SignMsg6 = (Phase5ADecom1, HomoELGamalProof<GE>, DLogProof<GE>);
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext7 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -163,10 +158,9 @@ pub struct SignContext7 {
     phase_5d_decom2: Phase5DDecom2
 }
 
-#[allow(dead_code)]
 pub type SignMsg7 = Phase5Com2;
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext8 {
     indices: Vec<usize>,
     threshold_index: usize,
@@ -180,19 +174,16 @@ pub struct SignContext8 {
     commit5c_vec: Vec<Phase5Com2>
 }
 
-#[allow(dead_code)]
 pub type SignMsg8 = Phase5DDecom2;
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignContext9 {
     threshold: u16,
     local_sig: LocalSignature
 }
 
-#[allow(dead_code)]
 pub type SignMsg9 = FE;
 
-#[allow(dead_code)]
 pub fn sign1(context: SignContext, indices: Vec<usize>, threshold_index: usize, message_hash: Vec<u8>) -> (SignMsg1, SignContext1) {
 
     let private = PartyPrivate::set_private(context.party_keys.clone(), context.shared_keys);
@@ -216,7 +207,7 @@ pub fn sign1(context: SignContext, indices: Vec<usize>, threshold_index: usize, 
         party_keys: context.party_keys,
         vss_scheme_vec: context.vss_scheme_vec,
         paillier_key_vec: context.paillier_key_vec,
-        y_sum: context.y_sum,
+        y_sum: context.pk,
         sign_keys: sign_keys,
         xi_com_vec: xi_com_vec,
         com: com,
@@ -226,7 +217,6 @@ pub fn sign1(context: SignContext, indices: Vec<usize>, threshold_index: usize, 
     ((context1.com.clone(), m_a_k), context1)
 }
 
-#[allow(dead_code)]
 pub fn sign2(messages: Vec<SignMsg1>, context: SignContext1) -> (Vec<SignMsg2>, SignContext2) {
 
     let mut j = 0;
@@ -294,7 +284,6 @@ pub fn sign2(messages: Vec<SignMsg1>, context: SignContext1) -> (Vec<SignMsg2>, 
 
 }
 
-#[allow(dead_code)]
 pub fn sign3(messages: Vec<SignMsg2>, context: SignContext2) -> (SignMsg3, SignContext3) {
 
     let mut m_b_gamma_rec_vec: Vec<MessageB> = Vec::new();
@@ -356,7 +345,6 @@ pub fn sign3(messages: Vec<SignMsg2>, context: SignContext2) -> (SignMsg3, SignC
     (delta_i, context3)
 }
 
-#[allow(dead_code)]
 pub fn sign4(messages: Vec<SignMsg3>, context: SignContext3) -> (SignMsg4, SignContext4) {
     let mut delta_vec: Vec<FE> = Vec::new();
 
@@ -390,7 +378,6 @@ pub fn sign4(messages: Vec<SignMsg3>, context: SignContext3) -> (SignMsg4, SignC
     (context4.decommit.clone(), context4)
 }
 
-#[allow(dead_code)]
 pub fn sign5(messages: Vec<SignMsg4>, context: SignContext4) -> (SignMsg5, SignContext5) {
     let mut bc1_vec = context.bc1_vec.clone();
     let mut decommit_vec: Vec<SignDecommitPhase1> = Vec::new();
@@ -440,7 +427,6 @@ pub fn sign5(messages: Vec<SignMsg4>, context: SignContext4) -> (SignMsg5, SignC
 
 }
 
-#[allow(dead_code)]
 pub fn sign6(messages: Vec<SignMsg5>, context: SignContext5) -> (SignMsg6, SignContext6) {
     let mut commit5a_vec: Vec<Phase5Com1> = Vec::new();
 
@@ -473,7 +459,6 @@ pub fn sign6(messages: Vec<SignMsg5>, context: SignContext5) -> (SignMsg6, SignC
 
 }
 
-#[allow(dead_code)]
 pub fn sign7(messages: Vec<SignMsg6>, context: SignContext6) -> (SignMsg7, SignContext7) {
     let mut commit5a_vec = context.commit5a_vec;
     let mut decommit5a_and_elgamal_and_dlog_vec: Vec<(
@@ -536,7 +521,6 @@ pub fn sign7(messages: Vec<SignMsg6>, context: SignContext6) -> (SignMsg7, SignC
     (context7.phase5_com2.clone(), context7)
 }
 
-#[allow(dead_code)]
 pub fn sign8(messages: Vec<SignMsg7>, context: SignContext7) -> (SignMsg8, SignContext8) {
     let mut commit5c_vec: Vec<Phase5Com2> = Vec::new();
     let mut j = 0;
@@ -566,7 +550,6 @@ pub fn sign8(messages: Vec<SignMsg7>, context: SignContext7) -> (SignMsg8, SignC
 
 }
 
-#[allow(dead_code)]
 pub fn sign9(messages: Vec<SignMsg8>, context: SignContext8) -> (SignMsg9, SignContext9) {
     let mut decommit5d_vec: Vec<Phase5DDecom2> = Vec::new();
     let mut j = 0;
@@ -604,7 +587,6 @@ pub fn sign9(messages: Vec<SignMsg8>, context: SignContext8) -> (SignMsg9, SignC
 
 }
 
-#[allow(dead_code)]
 pub fn sign10(messages: Vec<SignMsg9>, context: SignContext9) -> Vec<u8> {
 
     let mut s_i_vec: Vec<FE> = Vec::new();
