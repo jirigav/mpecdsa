@@ -1,6 +1,6 @@
 [package]
 name = "mpecdsa"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
 
 
@@ -12,25 +12,22 @@ crate-type = ["lib"]
 name = "mpecdsa"
 
 [features]
-default = ["curv/num-bigint"]
+default = ["curv-kzen/num-bigint"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-p256 = { version = "0.5.2", features = ["ecdsa"] }
+sha2 = "0.9"
 time="*"
+curv-kzen = { version = "0.9", default-features = false }
 
 [dependencies.multi-party-ecdsa]
 git = "https://github.com/jirigav/multi-party-ecdsa"
 branch= "p256"
 default-features = false
-
-[dependencies.curv]
-git = "https://github.com/jirigav/curv"
-branch= "p256fix"
-default-features = false
+version = "0.8.0"
 
 [dependencies.paillier]
-git = "https://github.com/jirigav/rust-paillier"
-branch= "p256"
+version = "0.4.2"
+package = "kzen-paillier"
 default-features = false
