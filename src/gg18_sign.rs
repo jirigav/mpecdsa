@@ -199,19 +199,19 @@ pub fn gg18_sign1(context: GG18SignContext, indices: Vec<u16>, threshold_index: 
     let (m_a_k, _) = MessageA::a(&sign_keys.k_i, &context.party_keys.ek, &[]);
 
     let context1 = GG18SignContext1 {
-        indices: indices,
-        threshold_index: threshold_index,
-        message_hash: message_hash,
+        indices,
+        threshold_index,
+        message_hash,
         threshold: context.threshold,
         party_id: context.index,
         party_keys: context.party_keys,
         vss_scheme_vec: context.vss_scheme_vec,
         paillier_key_vec: context.paillier_key_vec,
         y_sum: context.pk,
-        sign_keys: sign_keys,
-        xi_com_vec: xi_com_vec,
-        com: com,
-        decommit: decommit
+        sign_keys,
+        xi_com_vec,
+        com,
+        decommit
     };
 
     ((context1.com.clone(), m_a_k), context1)
@@ -277,9 +277,9 @@ pub fn gg18_sign2(messages: Vec<GG18SignMsg1>, context: GG18SignContext1) -> (Ve
         sign_keys: context.sign_keys,
         xi_com_vec: context.xi_com_vec,
         decommit: context.decommit,
-        bc1_vec: bc1_vec,
-        beta_vec: beta_vec,
-        ni_vec: ni_vec
+        bc1_vec,
+        beta_vec,
+        ni_vec
     };
 
     (send_vec, context2)
@@ -339,9 +339,9 @@ pub fn gg18_sign3(messages: Vec<GG18SignMsg2>, context: GG18SignContext2) -> (GG
         sign_keys: context.sign_keys,
         decommit: context.decommit,
         bc1_vec: context.bc1_vec,
-        m_b_gamma_rec_vec: m_b_gamma_rec_vec,
+        m_b_gamma_rec_vec,
         delta_i: delta_i.clone(),
-        sigma: sigma
+        sigma
     };
 
     (delta_i, context3)
@@ -374,7 +374,7 @@ pub fn gg18_sign4(messages: Vec<GG18SignMsg3>, context: GG18SignContext3) -> (GG
         bc1_vec: context.bc1_vec,
         m_b_gamma_rec_vec: context.m_b_gamma_rec_vec,
         sigma: context.sigma,
-        delta_inv: delta_inv
+        delta_inv
     };
 
     (context4.decommit.clone(), context4)
@@ -418,12 +418,12 @@ pub fn gg18_sign5(messages: Vec<GG18SignMsg4>, context: GG18SignContext4) -> (GG
         threshold_index: context.threshold_index,
         threshold: context.threshold,
         party_id: context.party_id,
-        local_sig: local_sig,
-        phase5_com: phase5_com,
-        phase_5a_decom: phase_5a_decom,
-        helgamal_proof: helgamal_proof,
-        dlog_proof_rho: dlog_proof_rho,
-        r: r
+        local_sig,
+        phase5_com,
+        phase_5a_decom,
+        helgamal_proof,
+        dlog_proof_rho,
+        r
     };
     (context5.phase5_com.clone(), context5)
 
@@ -452,7 +452,7 @@ pub fn gg18_sign6(messages: Vec<GG18SignMsg5>, context: GG18SignContext5) -> (GG
         helgamal_proof: context.helgamal_proof,
         dlog_proof_rho: context.dlog_proof_rho,
         r: context.r,
-        commit5a_vec: commit5a_vec
+        commit5a_vec
 
     };
 
@@ -514,10 +514,10 @@ pub fn gg18_sign7(messages: Vec<GG18SignMsg6>, context: GG18SignContext6) -> (GG
         party_id: context.party_id,
         local_sig: context.local_sig,
         phase_5a_decom: context.phase_5a_decom,
-        decommit5a_and_elgamal_and_dlog_vec_includes_i: decommit5a_and_elgamal_and_dlog_vec_includes_i,
-        phase_5a_decomm_vec: phase_5a_decomm_vec,
-        phase5_com2: phase5_com2,
-        phase_5d_decom2: phase_5d_decom2
+        decommit5a_and_elgamal_and_dlog_vec_includes_i,
+        phase_5a_decomm_vec,
+        phase5_com2,
+        phase_5d_decom2
     };
 
     (context7.phase5_com2.clone(), context7)
@@ -545,7 +545,7 @@ pub fn gg18_sign8(messages: Vec<GG18SignMsg7>, context: GG18SignContext7) -> (GG
         decommit5a_and_elgamal_and_dlog_vec_includes_i: context.decommit5a_and_elgamal_and_dlog_vec_includes_i,
         phase_5a_decomm_vec: context.phase_5a_decomm_vec,
         phase_5d_decom2: context.phase_5d_decom2,
-        commit5c_vec: commit5c_vec
+        commit5c_vec
     };
 
     (context8.phase_5d_decom2.clone(), context8)

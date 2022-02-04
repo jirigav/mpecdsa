@@ -116,16 +116,16 @@ Generate keys
 */
 
 pub fn gg18_key_gen_1(parties : u16, threshold : u16, index : u16) -> (GG18KeyGenMsg1, GG18KeyGenContext1) {
-    let party_keys = Keys::create(index);
+    let party_keys = Keys::create_safe_prime(index);
     let (bc_i, decom_i) = party_keys.phase1_broadcast_phase3_proof_of_correct_key();
 
     let context1 = GG18KeyGenContext1 {
-        threshold: threshold,
-        parties: parties,
-        index: index,
-        party_keys: party_keys,
+        threshold,
+        parties,
+        index,
+        party_keys,
         bc_i: bc_i.clone(),
-        decom_i: decom_i,
+        decom_i,
     };
     (bc_i, context1)
 }
@@ -142,7 +142,7 @@ pub fn gg18_key_gen_2(messages: Vec<GG18KeyGenMsg1>, context: GG18KeyGenContext1
         parties: context.parties,
         index: context.index,
         party_keys: context.party_keys,
-        bc1_vec: bc1_vec,
+        bc1_vec,
         decom_i: decom_i.clone(),
     };
     (decom_i, context2)
@@ -191,10 +191,10 @@ pub fn gg18_key_gen_3(messages: Vec<GG18KeyGenMsg2>, context: GG18KeyGenContext2
         index: context.index,
         party_keys: context.party_keys,
         bc1_vec: context.bc1_vec,
-        vss_scheme: vss_scheme,
-        secret_shares: secret_shares,
-        y_sum: y_sum,
-        point_vec: point_vec,
+        vss_scheme,
+        secret_shares,
+        y_sum,
+        point_vec,
     };
     (messages_output, context3)
 }
@@ -212,7 +212,7 @@ pub fn gg18_key_gen_4(messages: Vec<GG18KeyGenMsg3>, context: GG18KeyGenContext3
         vss_scheme: context.vss_scheme,
         y_sum: context.y_sum,
         point_vec: context.point_vec,
-        party_shares: party_shares
+        party_shares
     };
 
     (context4.vss_scheme.clone(), context4)
@@ -242,11 +242,11 @@ pub fn gg18_key_gen_5(messages: Vec<GG18KeyGenMsg4>, context: GG18KeyGenContext4
         index: context.index,
         party_keys: context.party_keys,
         bc1_vec: context.bc1_vec,
-        vss_scheme_vec: vss_scheme_vec,
+        vss_scheme_vec,
         y_sum: context.y_sum,
         point_vec: context.point_vec,
-        shared_keys: shared_keys,
-        dlog_proof: dlog_proof
+        shared_keys,
+        dlog_proof
     };
 
     (context5.dlog_proof.clone(), context5)
@@ -274,7 +274,7 @@ pub fn gg18_key_gen_6(messages: Vec<GG18KeyGenMsg5>, context: GG18KeyGenContext5
         party_keys: context.party_keys,
         vss_scheme_vec: context.vss_scheme_vec,
         shared_keys: context.shared_keys,
-        paillier_key_vec: paillier_key_vec,
+        paillier_key_vec,
         pk: context.y_sum,
     };
     sign_context
