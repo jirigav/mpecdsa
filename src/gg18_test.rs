@@ -39,47 +39,47 @@ pub fn check_sig(r: &Scalar<Secp256r1>, s: &Scalar<Secp256r1>, msg: &[u8], pk: &
 fn t3_of_n4() {
 
     // keygen1
-    let (gg18_key_gen_msg1_p0, keygen_context1_p0) = gg18_key_gen_1(4, 3, 0);
-    let (gg18_key_gen_msg1_p1, keygen_context1_p1) = gg18_key_gen_1(4, 3, 1);
-    let (gg18_key_gen_msg1_p2, keygen_context1_p2) = gg18_key_gen_1(4, 3, 2);
-    let (gg18_key_gen_msg1_p3, keygen_context1_p3) = gg18_key_gen_1(4, 3, 3);
+    let (gg18_key_gen_msg1_p0, keygen_context1_p0) = gg18_key_gen_1(4, 3, 0).unwrap();
+    let (gg18_key_gen_msg1_p1, keygen_context1_p1) = gg18_key_gen_1(4, 3, 1).unwrap();
+    let (gg18_key_gen_msg1_p2, keygen_context1_p2) = gg18_key_gen_1(4, 3, 2).unwrap();
+    let (gg18_key_gen_msg1_p3, keygen_context1_p3) = gg18_key_gen_1(4, 3, 3).unwrap();
 
     // keygen2
 
-    let (gg18_key_gen_msg2_p0, keygen_context2_p0) = gg18_key_gen_2([gg18_key_gen_msg1_p1.clone(), gg18_key_gen_msg1_p2.clone(), gg18_key_gen_msg1_p3.clone()].to_vec(), keygen_context1_p0);
-    let (gg18_key_gen_msg2_p1, keygen_context2_p1) = gg18_key_gen_2([gg18_key_gen_msg1_p0.clone(), gg18_key_gen_msg1_p2.clone(), gg18_key_gen_msg1_p3.clone()].to_vec(), keygen_context1_p1);
-    let (gg18_key_gen_msg2_p2, keygen_context2_p2) = gg18_key_gen_2([gg18_key_gen_msg1_p0.clone(), gg18_key_gen_msg1_p1.clone(), gg18_key_gen_msg1_p3.clone()].to_vec(), keygen_context1_p2);
-    let (gg18_key_gen_msg2_p3, keygen_context2_p3) = gg18_key_gen_2([gg18_key_gen_msg1_p0.clone(), gg18_key_gen_msg1_p1.clone(), gg18_key_gen_msg1_p2.clone()].to_vec(), keygen_context1_p3);
+    let (gg18_key_gen_msg2_p0, keygen_context2_p0) = gg18_key_gen_2([gg18_key_gen_msg1_p1.clone(), gg18_key_gen_msg1_p2.clone(), gg18_key_gen_msg1_p3.clone()].to_vec(), keygen_context1_p0).unwrap();
+    let (gg18_key_gen_msg2_p1, keygen_context2_p1) = gg18_key_gen_2([gg18_key_gen_msg1_p0.clone(), gg18_key_gen_msg1_p2.clone(), gg18_key_gen_msg1_p3.clone()].to_vec(), keygen_context1_p1).unwrap();
+    let (gg18_key_gen_msg2_p2, keygen_context2_p2) = gg18_key_gen_2([gg18_key_gen_msg1_p0.clone(), gg18_key_gen_msg1_p1.clone(), gg18_key_gen_msg1_p3.clone()].to_vec(), keygen_context1_p2).unwrap();
+    let (gg18_key_gen_msg2_p3, keygen_context2_p3) = gg18_key_gen_2([gg18_key_gen_msg1_p0.clone(), gg18_key_gen_msg1_p1.clone(), gg18_key_gen_msg1_p2.clone()].to_vec(), keygen_context1_p3).unwrap();
 
 
     // keygen3
 
-    let (gg18_key_gen_msg3_p0, keygen_context3_p0) = gg18_key_gen_3([gg18_key_gen_msg2_p1.clone(), gg18_key_gen_msg2_p2.clone(), gg18_key_gen_msg2_p3.clone()].to_vec(), keygen_context2_p0);
-    let (gg18_key_gen_msg3_p1, keygen_context3_p1) = gg18_key_gen_3([gg18_key_gen_msg2_p0.clone(), gg18_key_gen_msg2_p2.clone(), gg18_key_gen_msg2_p3.clone()].to_vec(), keygen_context2_p1);
-    let (gg18_key_gen_msg3_p2, keygen_context3_p2) = gg18_key_gen_3([gg18_key_gen_msg2_p0.clone(), gg18_key_gen_msg2_p1.clone(), gg18_key_gen_msg2_p3.clone()].to_vec(), keygen_context2_p2);
-    let (gg18_key_gen_msg3_p3, keygen_context3_p3) = gg18_key_gen_3([gg18_key_gen_msg2_p0.clone(), gg18_key_gen_msg2_p1.clone(), gg18_key_gen_msg2_p2.clone()].to_vec(), keygen_context2_p3);
+    let (gg18_key_gen_msg3_p0, keygen_context3_p0) = gg18_key_gen_3([gg18_key_gen_msg2_p1.clone(), gg18_key_gen_msg2_p2.clone(), gg18_key_gen_msg2_p3.clone()].to_vec(), keygen_context2_p0).unwrap();
+    let (gg18_key_gen_msg3_p1, keygen_context3_p1) = gg18_key_gen_3([gg18_key_gen_msg2_p0.clone(), gg18_key_gen_msg2_p2.clone(), gg18_key_gen_msg2_p3.clone()].to_vec(), keygen_context2_p1).unwrap();
+    let (gg18_key_gen_msg3_p2, keygen_context3_p2) = gg18_key_gen_3([gg18_key_gen_msg2_p0.clone(), gg18_key_gen_msg2_p1.clone(), gg18_key_gen_msg2_p3.clone()].to_vec(), keygen_context2_p2).unwrap();
+    let (gg18_key_gen_msg3_p3, keygen_context3_p3) = gg18_key_gen_3([gg18_key_gen_msg2_p0.clone(), gg18_key_gen_msg2_p1.clone(), gg18_key_gen_msg2_p2.clone()].to_vec(), keygen_context2_p3).unwrap();
 
     // keygen4
 
-    let (gg18_key_gen_msg4_p0, keygen_context4_p0) = gg18_key_gen_4([gg18_key_gen_msg3_p1[0].clone(), gg18_key_gen_msg3_p2[0].clone(), gg18_key_gen_msg3_p3[0].clone()].to_vec(), keygen_context3_p0);
-    let (gg18_key_gen_msg4_p1, keygen_context4_p1) = gg18_key_gen_4([gg18_key_gen_msg3_p0[0].clone(), gg18_key_gen_msg3_p2[1].clone(), gg18_key_gen_msg3_p3[1].clone()].to_vec(), keygen_context3_p1);
-    let (gg18_key_gen_msg4_p2, keygen_context4_p2) = gg18_key_gen_4([gg18_key_gen_msg3_p0[1].clone(), gg18_key_gen_msg3_p1[1].clone(), gg18_key_gen_msg3_p3[2].clone()].to_vec(), keygen_context3_p2);
-    let (gg18_key_gen_msg4_p3, keygen_context4_p3) = gg18_key_gen_4([gg18_key_gen_msg3_p0[2].clone(), gg18_key_gen_msg3_p1[2].clone(), gg18_key_gen_msg3_p2[2].clone()].to_vec(), keygen_context3_p3);
+    let (gg18_key_gen_msg4_p0, keygen_context4_p0) = gg18_key_gen_4([gg18_key_gen_msg3_p1[0].clone(), gg18_key_gen_msg3_p2[0].clone(), gg18_key_gen_msg3_p3[0].clone()].to_vec(), keygen_context3_p0).unwrap();
+    let (gg18_key_gen_msg4_p1, keygen_context4_p1) = gg18_key_gen_4([gg18_key_gen_msg3_p0[0].clone(), gg18_key_gen_msg3_p2[1].clone(), gg18_key_gen_msg3_p3[1].clone()].to_vec(), keygen_context3_p1).unwrap();
+    let (gg18_key_gen_msg4_p2, keygen_context4_p2) = gg18_key_gen_4([gg18_key_gen_msg3_p0[1].clone(), gg18_key_gen_msg3_p1[1].clone(), gg18_key_gen_msg3_p3[2].clone()].to_vec(), keygen_context3_p2).unwrap();
+    let (gg18_key_gen_msg4_p3, keygen_context4_p3) = gg18_key_gen_4([gg18_key_gen_msg3_p0[2].clone(), gg18_key_gen_msg3_p1[2].clone(), gg18_key_gen_msg3_p2[2].clone()].to_vec(), keygen_context3_p3).unwrap();
 
 
     // keygen5
 
-    let (gg18_key_gen_msg5_p0, keygen_context5_p0) = gg18_key_gen_5([gg18_key_gen_msg4_p1.clone(), gg18_key_gen_msg4_p2.clone(), gg18_key_gen_msg4_p3.clone()].to_vec(), keygen_context4_p0);
-    let (gg18_key_gen_msg5_p1, keygen_context5_p1) = gg18_key_gen_5([gg18_key_gen_msg4_p0.clone(), gg18_key_gen_msg4_p2.clone(), gg18_key_gen_msg4_p3.clone()].to_vec(), keygen_context4_p1);
-    let (gg18_key_gen_msg5_p2, keygen_context5_p2) = gg18_key_gen_5([gg18_key_gen_msg4_p0.clone(), gg18_key_gen_msg4_p1.clone(), gg18_key_gen_msg4_p3.clone()].to_vec(), keygen_context4_p2);
-    let (gg18_key_gen_msg5_p3, keygen_context5_p3) = gg18_key_gen_5([gg18_key_gen_msg4_p0.clone(), gg18_key_gen_msg4_p1.clone(), gg18_key_gen_msg4_p2.clone()].to_vec(), keygen_context4_p3);
+    let (gg18_key_gen_msg5_p0, keygen_context5_p0) = gg18_key_gen_5([gg18_key_gen_msg4_p1.clone(), gg18_key_gen_msg4_p2.clone(), gg18_key_gen_msg4_p3.clone()].to_vec(), keygen_context4_p0).unwrap();
+    let (gg18_key_gen_msg5_p1, keygen_context5_p1) = gg18_key_gen_5([gg18_key_gen_msg4_p0.clone(), gg18_key_gen_msg4_p2.clone(), gg18_key_gen_msg4_p3.clone()].to_vec(), keygen_context4_p1).unwrap();
+    let (gg18_key_gen_msg5_p2, keygen_context5_p2) = gg18_key_gen_5([gg18_key_gen_msg4_p0.clone(), gg18_key_gen_msg4_p1.clone(), gg18_key_gen_msg4_p3.clone()].to_vec(), keygen_context4_p2).unwrap();
+    let (gg18_key_gen_msg5_p3, keygen_context5_p3) = gg18_key_gen_5([gg18_key_gen_msg4_p0.clone(), gg18_key_gen_msg4_p1.clone(), gg18_key_gen_msg4_p2.clone()].to_vec(), keygen_context4_p3).unwrap();
 
     // keygen6
 
-    let gg18_sign_context_p0 = gg18_key_gen_6([gg18_key_gen_msg5_p1.clone(), gg18_key_gen_msg5_p2.clone(), gg18_key_gen_msg5_p3.clone()].to_vec(), keygen_context5_p0);
-    let gg18_sign_context_p1 = gg18_key_gen_6([gg18_key_gen_msg5_p0.clone(), gg18_key_gen_msg5_p2.clone(), gg18_key_gen_msg5_p3.clone()].to_vec(), keygen_context5_p1);
-    let gg18_sign_context_p2 = gg18_key_gen_6([gg18_key_gen_msg5_p0.clone(), gg18_key_gen_msg5_p1.clone(), gg18_key_gen_msg5_p3.clone()].to_vec(), keygen_context5_p2);
-    let gg18_sign_context_p3 = gg18_key_gen_6([gg18_key_gen_msg5_p0.clone(), gg18_key_gen_msg5_p1.clone(), gg18_key_gen_msg5_p2.clone()].to_vec(), keygen_context5_p3);
+    let gg18_sign_context_p0 = gg18_key_gen_6([gg18_key_gen_msg5_p1.clone(), gg18_key_gen_msg5_p2.clone(), gg18_key_gen_msg5_p3.clone()].to_vec(), keygen_context5_p0).unwrap();
+    let gg18_sign_context_p1 = gg18_key_gen_6([gg18_key_gen_msg5_p0.clone(), gg18_key_gen_msg5_p2.clone(), gg18_key_gen_msg5_p3.clone()].to_vec(), keygen_context5_p1).unwrap();
+    let gg18_sign_context_p2 = gg18_key_gen_6([gg18_key_gen_msg5_p0.clone(), gg18_key_gen_msg5_p1.clone(), gg18_key_gen_msg5_p3.clone()].to_vec(), keygen_context5_p2).unwrap();
+    let gg18_sign_context_p3 = gg18_key_gen_6([gg18_key_gen_msg5_p0.clone(), gg18_key_gen_msg5_p1.clone(), gg18_key_gen_msg5_p2.clone()].to_vec(), keygen_context5_p3).unwrap();
 
 
 
@@ -94,57 +94,57 @@ fn t3_of_n4() {
     let hash = hasher.finalize().to_vec();
 
     // gg18_sign1
-    let (gg18_sign_msg1_p0, gg18_sign_context1_p0) = gg18_sign1(gg18_sign_context_p0, [2, 3, 0].to_vec(), 2, hash.clone());
-    let (gg18_sign_msg1_p2, gg18_sign_context1_p2) = gg18_sign1(gg18_sign_context_p2, [2, 3, 0].to_vec(), 0, hash.clone());
-    let (gg18_sign_msg1_p3, gg18_sign_context1_p3) = gg18_sign1(gg18_sign_context_p3, [2, 3, 0].to_vec(), 1, hash.clone());
+    let (gg18_sign_msg1_p0, gg18_sign_context1_p0) = gg18_sign1(gg18_sign_context_p0, [2, 3, 0].to_vec(), 2, hash.clone()).unwrap();
+    let (gg18_sign_msg1_p2, gg18_sign_context1_p2) = gg18_sign1(gg18_sign_context_p2, [2, 3, 0].to_vec(), 0, hash.clone()).unwrap();
+    let (gg18_sign_msg1_p3, gg18_sign_context1_p3) = gg18_sign1(gg18_sign_context_p3, [2, 3, 0].to_vec(), 1, hash.clone()).unwrap();
 
     // gg18_sign2
-    let (gg18_sign_msg2_p0, gg18_sign_context2_p0) = gg18_sign2([gg18_sign_msg1_p2.clone(), gg18_sign_msg1_p3.clone()].to_vec(), gg18_sign_context1_p0);
-    let (gg18_sign_msg2_p2, gg18_sign_context2_p2) = gg18_sign2([gg18_sign_msg1_p3.clone(), gg18_sign_msg1_p0.clone()].to_vec(), gg18_sign_context1_p2);
-    let (gg18_sign_msg2_p3, gg18_sign_context2_p3) = gg18_sign2([gg18_sign_msg1_p2.clone(), gg18_sign_msg1_p0.clone()].to_vec(), gg18_sign_context1_p3);
+    let (gg18_sign_msg2_p0, gg18_sign_context2_p0) = gg18_sign2([gg18_sign_msg1_p2.clone(), gg18_sign_msg1_p3.clone()].to_vec(), gg18_sign_context1_p0).unwrap();
+    let (gg18_sign_msg2_p2, gg18_sign_context2_p2) = gg18_sign2([gg18_sign_msg1_p3.clone(), gg18_sign_msg1_p0.clone()].to_vec(), gg18_sign_context1_p2).unwrap();
+    let (gg18_sign_msg2_p3, gg18_sign_context2_p3) = gg18_sign2([gg18_sign_msg1_p2.clone(), gg18_sign_msg1_p0.clone()].to_vec(), gg18_sign_context1_p3).unwrap();
 
 
     // gg18_sign3
-    let (gg18_sign_msg3_p0, gg18_sign_context3_p0) = gg18_sign3([gg18_sign_msg2_p2[1].clone(), gg18_sign_msg2_p3[1].clone()].to_vec(), gg18_sign_context2_p0);
-    let (gg18_sign_msg3_p2, gg18_sign_context3_p2) = gg18_sign3([gg18_sign_msg2_p3[0].clone(), gg18_sign_msg2_p0[0].clone()].to_vec(), gg18_sign_context2_p2);
-    let (gg18_sign_msg3_p3, gg18_sign_context3_p3) = gg18_sign3([gg18_sign_msg2_p2[0].clone(), gg18_sign_msg2_p0[1].clone()].to_vec(), gg18_sign_context2_p3);
+    let (gg18_sign_msg3_p0, gg18_sign_context3_p0) = gg18_sign3([gg18_sign_msg2_p2[1].clone(), gg18_sign_msg2_p3[1].clone()].to_vec(), gg18_sign_context2_p0).unwrap();
+    let (gg18_sign_msg3_p2, gg18_sign_context3_p2) = gg18_sign3([gg18_sign_msg2_p3[0].clone(), gg18_sign_msg2_p0[0].clone()].to_vec(), gg18_sign_context2_p2).unwrap();
+    let (gg18_sign_msg3_p3, gg18_sign_context3_p3) = gg18_sign3([gg18_sign_msg2_p2[0].clone(), gg18_sign_msg2_p0[1].clone()].to_vec(), gg18_sign_context2_p3).unwrap();
 
 
     // gg18_sign4
-    let (gg18_sign_msg4_p0, gg18_sign_context4_p0) = gg18_sign4([gg18_sign_msg3_p2.clone(), gg18_sign_msg3_p3.clone()].to_vec(), gg18_sign_context3_p0);
-    let (gg18_sign_msg4_p2, gg18_sign_context4_p2) = gg18_sign4([gg18_sign_msg3_p3.clone(), gg18_sign_msg3_p0.clone()].to_vec(), gg18_sign_context3_p2);
-    let (gg18_sign_msg4_p3, gg18_sign_context4_p3) = gg18_sign4([gg18_sign_msg3_p2.clone(), gg18_sign_msg3_p0.clone()].to_vec(), gg18_sign_context3_p3);
+    let (gg18_sign_msg4_p0, gg18_sign_context4_p0) = gg18_sign4([gg18_sign_msg3_p2.clone(), gg18_sign_msg3_p3.clone()].to_vec(), gg18_sign_context3_p0).unwrap();
+    let (gg18_sign_msg4_p2, gg18_sign_context4_p2) = gg18_sign4([gg18_sign_msg3_p3.clone(), gg18_sign_msg3_p0.clone()].to_vec(), gg18_sign_context3_p2).unwrap();
+    let (gg18_sign_msg4_p3, gg18_sign_context4_p3) = gg18_sign4([gg18_sign_msg3_p2.clone(), gg18_sign_msg3_p0.clone()].to_vec(), gg18_sign_context3_p3).unwrap();
 
     // gg18_sign5
-    let (gg18_sign_msg5_p0, gg18_sign_context5_p0) = gg18_sign5([gg18_sign_msg4_p2.clone(), gg18_sign_msg4_p3.clone()].to_vec(), gg18_sign_context4_p0);
-    let (gg18_sign_msg5_p2, gg18_sign_context5_p2) = gg18_sign5([gg18_sign_msg4_p3.clone(), gg18_sign_msg4_p0.clone()].to_vec(), gg18_sign_context4_p2);
-    let (gg18_sign_msg5_p3, gg18_sign_context5_p3) = gg18_sign5([gg18_sign_msg4_p2.clone(), gg18_sign_msg4_p0.clone()].to_vec(), gg18_sign_context4_p3);
+    let (gg18_sign_msg5_p0, gg18_sign_context5_p0) = gg18_sign5([gg18_sign_msg4_p2.clone(), gg18_sign_msg4_p3.clone()].to_vec(), gg18_sign_context4_p0).unwrap();
+    let (gg18_sign_msg5_p2, gg18_sign_context5_p2) = gg18_sign5([gg18_sign_msg4_p3.clone(), gg18_sign_msg4_p0.clone()].to_vec(), gg18_sign_context4_p2).unwrap();
+    let (gg18_sign_msg5_p3, gg18_sign_context5_p3) = gg18_sign5([gg18_sign_msg4_p2.clone(), gg18_sign_msg4_p0.clone()].to_vec(), gg18_sign_context4_p3).unwrap();
 
 
     // gg18_sign6
-    let (gg18_sign_msg6_p0, gg18_sign_context6_p0) = gg18_sign6([gg18_sign_msg5_p2.clone(), gg18_sign_msg5_p3.clone()].to_vec(), gg18_sign_context5_p0);
-    let (gg18_sign_msg6_p2, gg18_sign_context6_p2) = gg18_sign6([gg18_sign_msg5_p3.clone(), gg18_sign_msg5_p0.clone()].to_vec(), gg18_sign_context5_p2);
-    let (gg18_sign_msg6_p3, gg18_sign_context6_p3) = gg18_sign6([gg18_sign_msg5_p2.clone(), gg18_sign_msg5_p0.clone()].to_vec(), gg18_sign_context5_p3);
+    let (gg18_sign_msg6_p0, gg18_sign_context6_p0) = gg18_sign6([gg18_sign_msg5_p2.clone(), gg18_sign_msg5_p3.clone()].to_vec(), gg18_sign_context5_p0).unwrap();
+    let (gg18_sign_msg6_p2, gg18_sign_context6_p2) = gg18_sign6([gg18_sign_msg5_p3.clone(), gg18_sign_msg5_p0.clone()].to_vec(), gg18_sign_context5_p2).unwrap();
+    let (gg18_sign_msg6_p3, gg18_sign_context6_p3) = gg18_sign6([gg18_sign_msg5_p2.clone(), gg18_sign_msg5_p0.clone()].to_vec(), gg18_sign_context5_p3).unwrap();
 
     // gg18_sign7
-    let (gg18_sign_msg7_p0, gg18_sign_context7_p0) = gg18_sign7([gg18_sign_msg6_p2.clone(), gg18_sign_msg6_p3.clone()].to_vec(), gg18_sign_context6_p0);
-    let (gg18_sign_msg7_p2, gg18_sign_context7_p2) = gg18_sign7([gg18_sign_msg6_p3.clone(), gg18_sign_msg6_p0.clone()].to_vec(), gg18_sign_context6_p2);
-    let (gg18_sign_msg7_p3, gg18_sign_context7_p3) = gg18_sign7([gg18_sign_msg6_p2.clone(), gg18_sign_msg6_p0.clone()].to_vec(), gg18_sign_context6_p3);
+    let (gg18_sign_msg7_p0, gg18_sign_context7_p0) = gg18_sign7([gg18_sign_msg6_p2.clone(), gg18_sign_msg6_p3.clone()].to_vec(), gg18_sign_context6_p0).unwrap();
+    let (gg18_sign_msg7_p2, gg18_sign_context7_p2) = gg18_sign7([gg18_sign_msg6_p3.clone(), gg18_sign_msg6_p0.clone()].to_vec(), gg18_sign_context6_p2).unwrap();
+    let (gg18_sign_msg7_p3, gg18_sign_context7_p3) = gg18_sign7([gg18_sign_msg6_p2.clone(), gg18_sign_msg6_p0.clone()].to_vec(), gg18_sign_context6_p3).unwrap();
 
     // gg18_sign8
-    let (gg18_sign_msg8_p0, gg18_sign_context8_p0) = gg18_sign8([gg18_sign_msg7_p2.clone(), gg18_sign_msg7_p3.clone()].to_vec(), gg18_sign_context7_p0);
-    let (gg18_sign_msg8_p2, gg18_sign_context8_p2) = gg18_sign8([gg18_sign_msg7_p3.clone(), gg18_sign_msg7_p0.clone()].to_vec(), gg18_sign_context7_p2);
-    let (gg18_sign_msg8_p3, gg18_sign_context8_p3) = gg18_sign8([gg18_sign_msg7_p2.clone(), gg18_sign_msg7_p0.clone()].to_vec(), gg18_sign_context7_p3);
+    let (gg18_sign_msg8_p0, gg18_sign_context8_p0) = gg18_sign8([gg18_sign_msg7_p2.clone(), gg18_sign_msg7_p3.clone()].to_vec(), gg18_sign_context7_p0).unwrap();
+    let (gg18_sign_msg8_p2, gg18_sign_context8_p2) = gg18_sign8([gg18_sign_msg7_p3.clone(), gg18_sign_msg7_p0.clone()].to_vec(), gg18_sign_context7_p2).unwrap();
+    let (gg18_sign_msg8_p3, gg18_sign_context8_p3) = gg18_sign8([gg18_sign_msg7_p2.clone(), gg18_sign_msg7_p0.clone()].to_vec(), gg18_sign_context7_p3).unwrap();
 
     // gg18_sign9
-    let (gg18_sign_msg9_p0, gg18_sign_context9_p0) = gg18_sign9([gg18_sign_msg8_p2.clone(), gg18_sign_msg8_p3.clone()].to_vec(), gg18_sign_context8_p0);
-    let (gg18_sign_msg9_p2, gg18_sign_context9_p2) = gg18_sign9([gg18_sign_msg8_p3.clone(), gg18_sign_msg8_p0.clone()].to_vec(), gg18_sign_context8_p2);
-    let (gg18_sign_msg9_p3, gg18_sign_context9_p3) = gg18_sign9([gg18_sign_msg8_p2.clone(), gg18_sign_msg8_p0.clone()].to_vec(), gg18_sign_context8_p3);
+    let (gg18_sign_msg9_p0, gg18_sign_context9_p0) = gg18_sign9([gg18_sign_msg8_p2.clone(), gg18_sign_msg8_p3.clone()].to_vec(), gg18_sign_context8_p0).unwrap();
+    let (gg18_sign_msg9_p2, gg18_sign_context9_p2) = gg18_sign9([gg18_sign_msg8_p3.clone(), gg18_sign_msg8_p0.clone()].to_vec(), gg18_sign_context8_p2).unwrap();
+    let (gg18_sign_msg9_p3, gg18_sign_context9_p3) = gg18_sign9([gg18_sign_msg8_p2.clone(), gg18_sign_msg8_p0.clone()].to_vec(), gg18_sign_context8_p3).unwrap();
 
     // gg18_sign10
-    let gg18_signature_p0 = gg18_sign10([gg18_sign_msg9_p2.clone(), gg18_sign_msg9_p3.clone()].to_vec(), gg18_sign_context9_p0);
-    let gg18_signature_p2 = gg18_sign10([gg18_sign_msg9_p3.clone(), gg18_sign_msg9_p0.clone()].to_vec(), gg18_sign_context9_p2);
-    let gg18_signature_p3 = gg18_sign10([gg18_sign_msg9_p2.clone(), gg18_sign_msg9_p0.clone()].to_vec(), gg18_sign_context9_p3);
+    let gg18_signature_p0 = gg18_sign10([gg18_sign_msg9_p2.clone(), gg18_sign_msg9_p3.clone()].to_vec(), gg18_sign_context9_p0).unwrap();
+    let gg18_signature_p2 = gg18_sign10([gg18_sign_msg9_p3.clone(), gg18_sign_msg9_p0.clone()].to_vec(), gg18_sign_context9_p2).unwrap();
+    let gg18_signature_p3 = gg18_sign10([gg18_sign_msg9_p2.clone(), gg18_sign_msg9_p0.clone()].to_vec(), gg18_sign_context9_p3).unwrap();
 
     let r = Scalar::<Secp256r1>::from(&BigInt::from_bytes(&gg18_signature_p0[..32]));
     let s = Scalar::<Secp256r1>::from(&BigInt::from_bytes(&gg18_signature_p0[32..]));

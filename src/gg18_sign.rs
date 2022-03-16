@@ -26,7 +26,8 @@ use curv::{
     BigInt,
 };
 use multi_party_ecdsa::protocols::multi_party_ecdsa::gg_2018::party_i::{
-    Keys, LocalSignature, PartyPrivate, Phase5ADecom1, Phase5Com1, Phase5Com2, Phase5DDecom2, SignBroadcastPhase1, SignDecommitPhase1, SignKeys
+    Keys, LocalSignature, PartyPrivate, Phase5ADecom1, Phase5Com1, Phase5Com2,
+    Phase5DDecom2, SignBroadcastPhase1, SignDecommitPhase1, SignKeys
 };
 use paillier::EncryptionKey;
 use multi_party_ecdsa::utilities::mta::*;
@@ -184,7 +185,8 @@ pub struct GG18SignContext9 {
 
 pub type GG18SignMsg9 = Scalar<Secp256r1>;
 
-pub fn gg18_sign1(context: GG18SignContext, indices: Vec<u16>, threshold_index: usize, message_hash: Vec<u8>) -> (GG18SignMsg1, GG18SignContext1) {
+pub fn gg18_sign1(context: GG18SignContext, indices: Vec<u16>, threshold_index: usize, message_hash: Vec<u8>)
+-> Result<(GG18SignMsg1, GG18SignContext1), &'static str> {
 
     let private = PartyPrivate::set_private(context.party_keys.clone(), context.shared_keys);
     let sign_keys = SignKeys::create(
@@ -214,10 +216,11 @@ pub fn gg18_sign1(context: GG18SignContext, indices: Vec<u16>, threshold_index: 
         decommit
     };
 
-    ((context1.com.clone(), m_a_k), context1)
+    Ok(((context1.com.clone(), m_a_k), context1))
 }
 
-pub fn gg18_sign2(messages: Vec<GG18SignMsg1>, context: GG18SignContext1) -> (Vec<GG18SignMsg2>, GG18SignContext2) {
+pub fn gg18_sign2(messages: Vec<GG18SignMsg1>, context: GG18SignContext1)
+-> Result<(Vec<GG18SignMsg2>, GG18SignContext2), &'static str> {
 
     let mut j = 0;
     let mut bc1_vec: Vec<SignBroadcastPhase1> = Vec::new();
@@ -246,18 +249,23 @@ pub fn gg18_sign2(messages: Vec<GG18SignMsg1>, context: GG18SignContext1) -> (Ve
     let mut j = 0;
     for i in 0..context.threshold {
         if (i as usize) != context.threshold_index{
-            let (m_b_gamma, beta_gamma, _, _) = MessageB::b(
+            let result1 = MessageB::b(
                 &context.sign_keys.gamma_i,
                 &context.paillier_key_vec[context.indices[i as usize] as usize],
                 m_a_vec[j].clone(),
                 &[]
-            ).unwrap();
-            let (m_b_w, beta_wi, _, _) = MessageB::b(
+            );
+            let result2 = MessageB::b(
                 &context.sign_keys.w_i,
                 &context.paillier_key_vec[context.indices[i as usize] as usize],
                 m_a_vec[j].clone(),
                 &[]
-            ).unwrap();
+            );
+            if result1.is_err() || result2.is_err() {
+                return Err("mta message B failed");
+            }
+            let (m_b_gamma, beta_gamma, _, _) = result1.unwrap();
+            let (m_b_w, beta_wi, _, _) = result2.unwrap();
             send_vec.push((m_b_gamma, m_b_w));
             beta_vec.push(beta_gamma);
             ni_vec.push(beta_wi);
@@ -282,11 +290,12 @@ pub fn gg18_sign2(messages: Vec<GG18SignMsg1>, context: GG18SignContext1) -> (Ve
         ni_vec
     };
 
-    (send_vec, context2)
+    Ok((send_vec, context2))
 
 }
 
-pub fn gg18_sign3(messages: Vec<GG18SignMsg2>, context: GG18SignContext2) -> (GG18SignMsg3, GG18SignContext3) {
+pub fn gg18_sign3(messages: Vec<GG18SignMsg2>, context: GG18SignContext2)
+-> Result<(GG18SignMsg3, GG18SignContext3), &'static str> {
 
     let mut m_b_gamma_rec_vec: Vec<MessageB> = Vec::new();
     let mut m_b_w_rec_vec: Vec<MessageB> = Vec::new();
@@ -304,16 +313,24 @@ pub fn gg18_sign3(messages: Vec<GG18SignMsg2>, context: GG18SignContext2) -> (GG
     for i in 0..context.threshold {
         if (i as usize) != context.threshold_index {
             let m_b = m_b_gamma_rec_vec[j].clone();
+            let result = m_b
+                .verify_proofs_get_alpha(&context.party_keys.dk, &context.sign_keys.k_i);
+            if result.is_err() {
+                return Err("wrong dlog or m_b")
+            }
+            let alpha_ij_gamma = result.unwrap();
 
-            let alpha_ij_gamma = m_b
-                .verify_proofs_get_alpha(&context.party_keys.dk, &context.sign_keys.k_i)
-                .expect("wrong dlog or m_b");
             let m_b = m_b_w_rec_vec[j].clone();
-            let alpha_ij_wi = m_b
-                .verify_proofs_get_alpha(&context.party_keys.dk, &context.sign_keys.k_i)
-                .expect("wrong dlog or m_b");
+            let result = m_b
+                .verify_proofs_get_alpha(&context.party_keys.dk, &context.sign_keys.k_i);
+            if result.is_err() {
+                return Err("wrong dlog or m_b")
+            }
+            let alpha_ij_wi = result.unwrap();
+
             alpha_vec.push(alpha_ij_gamma.0);
             miu_vec.push(alpha_ij_wi.0);
+
             let g_w_i = Keys::update_commitments_to_xi(
                 &context.xi_com_vec[context.indices[i as usize] as usize],
                 &context.vss_scheme_vec[context.indices[i as usize] as usize],
@@ -344,10 +361,12 @@ pub fn gg18_sign3(messages: Vec<GG18SignMsg2>, context: GG18SignContext2) -> (GG
         sigma
     };
 
-    (delta_i, context3)
+    Ok((delta_i, context3))
 }
 
-pub fn gg18_sign4(messages: Vec<GG18SignMsg3>, context: GG18SignContext3) -> (GG18SignMsg4, GG18SignContext4) {
+pub fn gg18_sign4(messages: Vec<GG18SignMsg3>, context: GG18SignContext3)
+-> Result<(GG18SignMsg4, GG18SignContext4), &'static str> {
+
     let mut delta_vec: Vec<Scalar<Secp256r1>> = Vec::new();
 
     let mut j = 0;
@@ -377,10 +396,12 @@ pub fn gg18_sign4(messages: Vec<GG18SignMsg3>, context: GG18SignContext3) -> (GG
         delta_inv
     };
 
-    (context4.decommit.clone(), context4)
+    Ok((context4.decommit.clone(), context4))
 }
 
-pub fn gg18_sign5(messages: Vec<GG18SignMsg4>, context: GG18SignContext4) -> (GG18SignMsg5, GG18SignContext5) {
+pub fn gg18_sign5(messages: Vec<GG18SignMsg4>, context: GG18SignContext4)
+-> Result<(GG18SignMsg5, GG18SignContext5), &'static str> {
+
     let mut bc1_vec = context.bc1_vec.clone();
     let mut decommit_vec: Vec<SignDecommitPhase1> = Vec::new();
 
@@ -400,8 +421,13 @@ pub fn gg18_sign5(messages: Vec<GG18SignMsg4>, context: GG18SignContext4) -> (GG
     let b_proof_vec = (0..context.m_b_gamma_rec_vec.len())
         .map(|i| &context.m_b_gamma_rec_vec[i].b_proof)
         .collect::<Vec<&DLogProof<Secp256r1, Sha256>>>();
-    let r = SignKeys::phase4(&context.delta_inv, &b_proof_vec, decommit_vec, &bc1_vec)
-        .expect("bad gamma_i decommit");
+    let result = SignKeys::phase4(&context.delta_inv, &b_proof_vec, decommit_vec, &bc1_vec);
+
+    if result.is_err() {
+        return Err("bad gamma_i decommit")
+    }
+
+    let r = result.unwrap();
 
     // adding local g_gamma_i
     let r = r + decomm_i.g_gamma_i * context.delta_inv;
@@ -425,11 +451,13 @@ pub fn gg18_sign5(messages: Vec<GG18SignMsg4>, context: GG18SignContext4) -> (GG
         dlog_proof_rho,
         r
     };
-    (context5.phase5_com.clone(), context5)
+    Ok((context5.phase5_com.clone(), context5))
 
 }
 
-pub fn gg18_sign6(messages: Vec<GG18SignMsg5>, context: GG18SignContext5) -> (GG18SignMsg6, GG18SignContext6) {
+pub fn gg18_sign6(messages: Vec<GG18SignMsg5>, context: GG18SignContext5)
+-> Result<(GG18SignMsg6, GG18SignContext6), &'static str> {
+
     let mut commit5a_vec: Vec<Phase5Com1> = Vec::new();
 
     let mut j = 0;
@@ -456,12 +484,14 @@ pub fn gg18_sign6(messages: Vec<GG18SignMsg5>, context: GG18SignContext5) -> (GG
 
     };
 
-    ((context6.phase_5a_decom.clone(), context6.helgamal_proof.clone(),
-    context6.dlog_proof_rho.clone()), context6)
+    Ok(((context6.phase_5a_decom.clone(), context6.helgamal_proof.clone(),
+    context6.dlog_proof_rho.clone()), context6))
 
 }
 
-pub fn gg18_sign7(messages: Vec<GG18SignMsg6>, context: GG18SignContext6) -> (GG18SignMsg7, GG18SignContext7) {
+pub fn gg18_sign7(messages: Vec<GG18SignMsg6>, context: GG18SignContext6)
+-> Result<(GG18SignMsg7, GG18SignContext7), &'static str> {
+
     let mut commit5a_vec = context.commit5a_vec;
     let mut decommit5a_and_elgamal_and_dlog_vec: Vec<(
         Phase5ADecom1,
@@ -496,7 +526,8 @@ pub fn gg18_sign7(messages: Vec<GG18SignMsg6>, context: GG18SignContext6) -> (GG
     let phase_5a_dlog_vec = (0..(context.threshold - 1))
         .map(|i| decommit5a_and_elgamal_and_dlog_vec[i as usize].2.clone())
         .collect::<Vec<DLogProof<Secp256r1, Sha256>>>();
-    let (phase5_com2, phase_5d_decom2) = context.local_sig
+
+    let result = context.local_sig
         .phase5c(
             &phase_5a_decomm_vec,
             &commit5a_vec,
@@ -504,8 +535,13 @@ pub fn gg18_sign7(messages: Vec<GG18SignMsg6>, context: GG18SignContext6) -> (GG
             &phase_5a_dlog_vec,
             &context.phase_5a_decom.V_i,
             &context.r,
-        )
-        .expect("error phase5");
+        );
+
+    if result.is_err() {
+        return Err("error phase5")
+    }
+
+    let (phase5_com2, phase_5d_decom2) = result.unwrap();
 
     let context7 = GG18SignContext7 {
         indices: context.indices,
@@ -520,10 +556,12 @@ pub fn gg18_sign7(messages: Vec<GG18SignMsg6>, context: GG18SignContext6) -> (GG
         phase_5d_decom2
     };
 
-    (context7.phase5_com2.clone(), context7)
+    Ok((context7.phase5_com2.clone(), context7))
 }
 
-pub fn gg18_sign8(messages: Vec<GG18SignMsg7>, context: GG18SignContext7) -> (GG18SignMsg8, GG18SignContext8) {
+pub fn gg18_sign8(messages: Vec<GG18SignMsg7>, context: GG18SignContext7)
+-> Result<(GG18SignMsg8, GG18SignContext8), &'static str> {
+
     let mut commit5c_vec: Vec<Phase5Com2> = Vec::new();
     let mut j = 0;
     for i in 0..context.threshold {
@@ -548,11 +586,13 @@ pub fn gg18_sign8(messages: Vec<GG18SignMsg7>, context: GG18SignContext7) -> (GG
         commit5c_vec
     };
 
-    (context8.phase_5d_decom2.clone(), context8)
+    Ok((context8.phase_5d_decom2.clone(), context8))
 
 }
 
-pub fn gg18_sign9(messages: Vec<GG18SignMsg8>, context: GG18SignContext8) -> (GG18SignMsg9, GG18SignContext9) {
+pub fn gg18_sign9(messages: Vec<GG18SignMsg8>, context: GG18SignContext8)
+-> Result<(GG18SignMsg9, GG18SignContext9), &'static str> {
+
     let mut decommit5d_vec: Vec<Phase5DDecom2> = Vec::new();
     let mut j = 0;
     for i in 0..context.threshold {
@@ -577,19 +617,23 @@ pub fn gg18_sign9(messages: Vec<GG18SignMsg8>, context: GG18SignContext8) -> (GG
             &decommit5d_vec,
             &context.commit5c_vec,
             &phase_5a_decomm_vec_includes_i,
-        )
-        .expect("bad com 5d");
+        );
+
+    if s_i.is_err() {
+        return Err("bad com 5d")
+    }
 
     let context9 = GG18SignContext9 {
         threshold: context.threshold,
         local_sig: context.local_sig
     };
 
-    (s_i, context9)
+    Ok((s_i.unwrap(), context9))
 
 }
 
-pub fn gg18_sign10(messages: Vec<GG18SignMsg9>, context: GG18SignContext9) -> Vec<u8> {
+pub fn gg18_sign10(messages: Vec<GG18SignMsg9>, context: GG18SignContext9)
+-> Result<Vec<u8>, &'static str> {
 
     let mut s_i_vec: Vec<Scalar<Secp256r1>> = Vec::new();
 
@@ -597,7 +641,13 @@ pub fn gg18_sign10(messages: Vec<GG18SignMsg9>, context: GG18SignContext9) -> Ve
         s_i_vec.push(messages[i as usize].clone());
     }
 
-    let sig = context.local_sig.output_signature(&s_i_vec).expect("verification failed");
+    let sig = context.local_sig.output_signature(&s_i_vec);
 
-    [sig.r.to_bytes().as_ref(), sig.s.to_bytes().as_ref()].concat()
+    if sig.is_err() {
+        return Err("verification failed")
+    }
+
+    let sig = sig.unwrap();
+
+    Ok([sig.r.to_bytes().as_ref(), sig.s.to_bytes().as_ref()].concat())
 }
