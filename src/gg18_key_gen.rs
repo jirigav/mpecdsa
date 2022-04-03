@@ -118,7 +118,7 @@ Generate keys
 pub fn gg18_key_gen_1(parties : u16, threshold : u16, index : u16)
 -> Result<(GG18KeyGenMsg1, GG18KeyGenContext1), &'static str> {
 
-    let party_keys = Keys::create_safe_prime(index);
+    let party_keys = Keys::create(index);
     let (bc_i, decom_i) = party_keys.phase1_broadcast_phase3_proof_of_correct_key();
 
     let context1 = GG18KeyGenContext1 {
@@ -273,7 +273,7 @@ pub fn gg18_key_gen_5(messages: Vec<GG18KeyGenMsg4>, context: GG18KeyGenContext4
 
 pub fn gg18_key_gen_6(messages: Vec<GG18KeyGenMsg5>, context: GG18KeyGenContext5)
 -> Result<GG18SignContext, &'static str> {
-    
+
     let params = Parameters {
         threshold: context.threshold - 1,
         share_count: context.parties,

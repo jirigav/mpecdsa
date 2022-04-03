@@ -17,6 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 pub mod gg18_sign;
 pub mod gg18_key_gen;
+pub mod gg18_refresh;
+pub mod gg18_rsign;
 
 #[cfg(test)]
 mod gg18_test;
+mod gg18_refresh_test;
+mod gg18_rsign_test;
