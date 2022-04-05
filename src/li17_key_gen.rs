@@ -1,4 +1,3 @@
-
 use curv::BigInt;
 use paillier::EncryptionKey;
 use multi_party_ecdsa::protocols::two_party_ecdsa::lindell_2017::*;
@@ -7,6 +6,7 @@ use multi_party_ecdsa::utilities::zk_pdl_with_slack::PDLwSlackStatement;
 use zk_paillier::zkproofs::CompositeDLogProof;
 use zk_paillier::zkproofs::NiCorrectKeyProof;
 use curv::elliptic::curves::{p256::Secp256r1, Point};
+use serde::{Serialize, Deserialize};
 
 #[derive(Clone, Debug)]
 pub struct Li17KeyGenContext1 {
@@ -40,11 +40,12 @@ pub struct Li17KeyGenContext3 {
 pub type Li17KeyGenMsg3 = (party_one::KeyGenSecondMsg, NiCorrectKeyProof, PDLwSlackStatement,
                            PDLwSlackProof, CompositeDLogProof, EncryptionKey, BigInt);
 
-
-
+#[derive(Serialize, Deserialize)]
 pub struct Li17SignContext {
     pub index: u16,
     pub public: Point<Secp256r1>,
+    pub public_p1: Point<Secp256r1>,
+    pub public_p2: Point<Secp256r1>,
     pub p1_private: Option<party_one::Party1Private>,
     pub p2_private: Option<party_two::Party2Private>,
     pub p2_paillier_public: Option<party_two::PaillierPublic>,
@@ -52,9 +53,6 @@ pub struct Li17SignContext {
 }
 
 pub type Li17KeyGenMsg4 = Point<Secp256r1>;
-
-
-
 
 
 pub fn li17_key_gen1( index: u16 ) -> Result<(Option<Li17KeyGenMsg1>, Li17KeyGenContext1), &'static str> {
@@ -164,12 +162,14 @@ pub fn li17_key_gen4( msg: Option<Li17KeyGenMsg3>, context: Li17KeyGenContext3 )
 ->  Result<(Option<Li17KeyGenMsg4>, Li17SignContext), &'static str> {
 
     if context.index == 0 {
-        let party_one_private = party_one::Party1Private::set_private_key(&context.p1_ec_key_pair.unwrap(),
+        let party_one_private = party_one::Party1Private::set_private_key(&context.p1_ec_key_pair.clone().unwrap(),
                                                                     &context.p1_paillier_key_pair.unwrap());
-        let public_key = party_one::compute_pubkey(&party_one_private, &context.p1_public_share_p2.unwrap());
+        let public_key = party_one::compute_pubkey(&party_one_private, &context.p1_public_share_p2.clone().unwrap());
         let sign_context = Li17SignContext {
             index: 0,
             public: public_key.clone(),
+            public_p1: context.p1_ec_key_pair.unwrap().public_share,
+            public_p2: context.p1_public_share_p2.unwrap(),
             p1_private: Some(party_one_private),
             p2_private: None,
             p2_paillier_public: None,
@@ -185,7 +185,7 @@ pub fn li17_key_gen4( msg: Option<Li17KeyGenMsg3>, context: Li17KeyGenContext3 )
             return Err("invalid context")
         }
 
-        let p2_ec_key_pair = context.p2_ec_key_pair.unwrap();
+        let p2_ec_key_pair = context.p2_ec_key_pair.clone().unwrap();
     	let r = party_two::KeyGenSecondMsg::verify_commitments_and_dlog_proof(
                             &context.p2_msg1_from_p1.unwrap(),
                             &party_one_second_message,
@@ -221,6 +221,8 @@ pub fn li17_key_gen4( msg: Option<Li17KeyGenMsg3>, context: Li17KeyGenContext3 )
         let sign_context = Li17SignContext {
             index: 1,
             public: public_key.clone(),
+            public_p1: party_one_second_message.comm_witness.public_share,
+            public_p2: context.p2_ec_key_pair.unwrap().public_share,
             p1_private: None,
             p2_private: Some(party_two_private),
             p2_paillier_public: Some(party_two_paillier)

@@ -1,9 +1,11 @@
 use crate::li17_key_gen::{li17_key_gen1, li17_key_gen2, li17_key_gen3, li17_key_gen4};
 use crate::li17_sign::{li17_sign1, li17_sign2, li17_sign3, li17_sign4};
+use crate::li17_refresh::{li17_refresh1, li17_refresh2, li17_refresh3, li17_refresh4};
 use sha2::{Sha256, Digest};
 use curv::elliptic::curves::{p256::Secp256r1, Scalar, Point};
 use curv::BigInt;
 use curv::arithmetic::traits::*;
+use std::fs;
 
 pub fn check_sig(r: &Scalar<Secp256r1>, s: &Scalar<Secp256r1>, msg: &[u8], pk: &Point<Secp256r1>) {
     use p256::ecdsa::{VerifyingKey, signature::Verifier, Signature};
@@ -36,6 +38,7 @@ pub fn check_sig(r: &Scalar<Secp256r1>, s: &Scalar<Secp256r1>, msg: &[u8], pk: &
 #[test]
 fn t2_of_n2() {
 
+    // keygen
     let (msg1p0, context1p0) = li17_key_gen1(0).unwrap();
     let (_msg1p1, context1p1) = li17_key_gen1(1).unwrap();
 
@@ -51,6 +54,38 @@ fn t2_of_n2() {
     let pk1 = pk1.unwrap();
     let pk2 = pk2.unwrap();
     assert!(pk1 == pk2);
+
+
+    // refresh
+
+    let (msg1p0, context1p0) = li17_refresh1(scontext0).unwrap();
+    let (_msg1p1, context1p1) = li17_refresh1(scontext1).unwrap();
+
+    let (_msg2p0, context2p0) = li17_refresh2(msg1p0.clone().unwrap(), context1p0).unwrap();
+    let (msg2p1, context2p1) = li17_refresh2(msg1p0.unwrap(), context1p1).unwrap();
+
+    let (msg3p0, context3p0) = li17_refresh3(msg2p1.clone().unwrap(), context2p0).unwrap();
+    let (_msg3p1, context3p1) = li17_refresh3(msg2p1.unwrap(), context2p1).unwrap();
+
+    let scontext0 = li17_refresh4(msg3p0.clone().unwrap(), context3p0).unwrap();
+    let scontext1 = li17_refresh4(msg3p0.unwrap(), context3p1).unwrap();
+
+
+    // refresh 2
+
+    let (msg1p0, context1p0) = li17_refresh1(scontext0).unwrap();
+    let (_msg1p1, context1p1) = li17_refresh1(scontext1).unwrap();
+
+    let (_msg2p0, context2p0) = li17_refresh2(msg1p0.clone().unwrap(), context1p0).unwrap();
+    let (msg2p1, context2p1) = li17_refresh2(msg1p0.unwrap(), context1p1).unwrap();
+
+    let (msg3p0, context3p0) = li17_refresh3(msg2p1.clone().unwrap(), context2p0).unwrap();
+    let (_msg3p1, context3p1) = li17_refresh3(msg2p1.unwrap(), context2p1).unwrap();
+
+    let scontext0 = li17_refresh4(msg3p0.clone().unwrap(), context3p0).unwrap();
+    let scontext1 = li17_refresh4(msg3p0.unwrap(), context3p1).unwrap();
+
+    // sign
 
     let mut hasher = Sha256::new();
     hasher.update(b"random message");
@@ -71,5 +106,7 @@ fn t2_of_n2() {
     let r = Scalar::<Secp256r1>::from(&BigInt::from_bytes(&sig[..32]));
     let s = Scalar::<Secp256r1>::from(&BigInt::from_bytes(&sig[32..]));
     check_sig(&r, &s, "random message".as_bytes(), &pk1);
+
+
 
 }

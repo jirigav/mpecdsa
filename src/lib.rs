@@ -19,7 +19,9 @@ pub mod gg18_sign;
 pub mod gg18_key_gen;
 pub mod li17_key_gen;
 pub mod li17_sign;
+pub mod li17_refresh;
 
 #[cfg(test)]
 mod gg18_test;
+#[cfg(test)]
 mod li17_test;
