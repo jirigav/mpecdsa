@@ -5,7 +5,6 @@ use sha2::{Sha256, Digest};
 use curv::elliptic::curves::{p256::Secp256r1, Scalar, Point};
 use curv::BigInt;
 use curv::arithmetic::traits::*;
-use std::fs;
 
 pub fn check_sig(r: &Scalar<Secp256r1>, s: &Scalar<Secp256r1>, msg: &[u8], pk: &Point<Secp256r1>) {
     use p256::ecdsa::{VerifyingKey, signature::Verifier, Signature};
@@ -106,7 +105,5 @@ fn t2_of_n2() {
     let r = Scalar::<Secp256r1>::from(&BigInt::from_bytes(&sig[..32]));
     let s = Scalar::<Secp256r1>::from(&BigInt::from_bytes(&sig[32..]));
     check_sig(&r, &s, "random message".as_bytes(), &pk1);
-
-
-
+    check_sig(&r, &s, "random message".as_bytes(), &pk2);
 }

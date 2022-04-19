@@ -204,7 +204,7 @@ pub fn li17_sign4( msg: Option<Li17SignMsg3>, context: Li17SignContext3) -> Resu
         if party_one::verify(&sig, &context.public, &context.hash).is_err() {
             return Err("invalid signature")
         }
-        return Ok(Some([sig.r.to_bytes(), sig.s.to_bytes()].concat()))
+        return Ok(Some([BigInt::to_bytes(&sig.r), BigInt::to_bytes(&sig.s)].concat()))
 
     } else {
         return Ok(None)
