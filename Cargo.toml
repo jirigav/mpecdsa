@@ -1,6 +1,6 @@
 [package]
 name = "mpecdsa"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2018"
 
 
@@ -29,9 +29,9 @@ zk-paillier = { version = "0.4.2", default-features = false }
 
 [dependencies.multi-party-ecdsa]
 git = "https://github.com/jirigav/multi-party-ecdsa"
-branch= "p256"
+branch = "p256"
 default-features = false
-version = "0.8.0"
+version = "0.8.1"
 
 [dependencies.paillier]
 version = "0.4.2"

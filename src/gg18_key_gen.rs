@@ -19,15 +19,14 @@ use curv::{
     cryptographic_primitives::{
         proofs::sigma_dlog::DLogProof, secret_sharing::feldman_vss::VerifiableSS,
     },
-    elliptic::curves::{p256::Secp256r1, Point, Scalar}
+    elliptic::curves::{p256::Secp256r1, Point, Scalar},
 };
 use multi_party_ecdsa::protocols::multi_party_ecdsa::gg_2018::party_i::{
-    KeyGenBroadcastMessage1, KeyGenDecommitMessage1, Keys, SharedKeys, Parameters,
+    KeyGenBroadcastMessage1, KeyGenDecommitMessage1, Keys, Parameters, SharedKeys,
 };
 use paillier::EncryptionKey;
+use serde::{Deserialize, Serialize};
 use sha2::Sha256;
-use serde::{Serialize, Deserialize};
-
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GG18KeyGenContext1 {
@@ -36,7 +35,7 @@ pub struct GG18KeyGenContext1 {
     index: u16,
     party_keys: Keys,
     bc_i: KeyGenBroadcastMessage1,
-    decom_i: KeyGenDecommitMessage1
+    decom_i: KeyGenDecommitMessage1,
 }
 
 pub type GG18KeyGenMsg1 = KeyGenBroadcastMessage1;
@@ -48,8 +47,7 @@ pub struct GG18KeyGenContext2 {
     index: u16,
     party_keys: Keys,
     bc1_vec: Vec<KeyGenBroadcastMessage1>,
-    decom_i: KeyGenDecommitMessage1
-
+    decom_i: KeyGenDecommitMessage1,
 }
 
 pub type GG18KeyGenMsg2 = KeyGenDecommitMessage1;
@@ -63,7 +61,7 @@ pub struct GG18KeyGenContext3 {
     bc1_vec: Vec<KeyGenBroadcastMessage1>,
     vss_scheme: VerifiableSS<Secp256r1>,
     secret_shares: Vec<Scalar<Secp256r1>>,
-    y_sum:  Point<Secp256r1>,
+    y_sum: Point<Secp256r1>,
     point_vec: Vec<Point<Secp256r1>>,
 }
 
@@ -95,7 +93,7 @@ pub struct GG18KeyGenContext5 {
     y_sum: Point<Secp256r1>,
     point_vec: Vec<Point<Secp256r1>>,
     shared_keys: SharedKeys,
-    dlog_proof: DLogProof<Secp256r1, Sha256>
+    dlog_proof: DLogProof<Secp256r1, Sha256>,
 }
 
 pub type GG18KeyGenMsg5 = DLogProof<Secp256r1, Sha256>;
@@ -115,9 +113,11 @@ pub struct GG18SignContext {
 Generate keys
 */
 
-pub fn gg18_key_gen_1(parties : u16, threshold : u16, index : u16)
--> Result<(GG18KeyGenMsg1, GG18KeyGenContext1), &'static str> {
-
+pub fn gg18_key_gen_1(
+    parties: u16,
+    threshold: u16,
+    index: u16,
+) -> Result<(GG18KeyGenMsg1, GG18KeyGenContext1), &'static str> {
     let party_keys = Keys::create(index);
     let (bc_i, decom_i) = party_keys.phase1_broadcast_phase3_proof_of_correct_key();
 
@@ -132,9 +132,10 @@ pub fn gg18_key_gen_1(parties : u16, threshold : u16, index : u16)
     Ok((bc_i, context1))
 }
 
-pub fn gg18_key_gen_2(messages: Vec<GG18KeyGenMsg1>, context: GG18KeyGenContext1)
--> Result<(GG18KeyGenMsg2, GG18KeyGenContext2), &'static str> {
-
+pub fn gg18_key_gen_2(
+    messages: Vec<GG18KeyGenMsg1>,
+    context: GG18KeyGenContext1,
+) -> Result<(GG18KeyGenMsg2, GG18KeyGenContext2), &'static str> {
     let (bc_i, decom_i) = (context.bc_i, context.decom_i);
 
     let mut bc1_vec = messages;
@@ -155,9 +156,10 @@ pub fn gg18_key_gen_2(messages: Vec<GG18KeyGenMsg1>, context: GG18KeyGenContext1
 /*
 Messages from this function should be sent over an encrypted channel
 */
-pub fn gg18_key_gen_3(messages: Vec<GG18KeyGenMsg2>, context: GG18KeyGenContext2)
--> Result<(Vec<GG18KeyGenMsg3>, GG18KeyGenContext3), &'static str> {
-
+pub fn gg18_key_gen_3(
+    messages: Vec<GG18KeyGenMsg2>,
+    context: GG18KeyGenContext2,
+) -> Result<(Vec<GG18KeyGenMsg3>, GG18KeyGenContext3), &'static str> {
     let params = Parameters {
         threshold: context.threshold - 1,
         share_count: context.parties,
@@ -171,22 +173,26 @@ pub fn gg18_key_gen_3(messages: Vec<GG18KeyGenMsg2>, context: GG18KeyGenContext2
             point_vec.push(context.decom_i.y_i.clone());
             decom_vec.push(context.decom_i.clone());
         } else {
-            let decom_j  = &messages[j];
+            let decom_j = &messages[j];
             point_vec.push(decom_j.y_i.clone());
             decom_vec.push(decom_j.clone());
-            j = j + 1;
+            j += 1;
         }
     }
 
     let (head, tail) = point_vec.split_at(1);
     let y_sum = tail.iter().fold(head[0].clone(), |acc, x| acc + x);
 
-     let result = context.party_keys
+    let result = context
+        .party_keys
         .phase1_verify_com_phase3_verify_correct_key_phase2_distribute(
-            &params, &decom_vec, &context.bc1_vec);
+            &params,
+            &decom_vec,
+            &context.bc1_vec,
+        );
 
     if result.is_err() {
-        return Err("invalid key")
+        return Err("invalid key");
     }
 
     let (vss_scheme, secret_shares, _index) = result.unwrap();
@@ -209,11 +215,15 @@ pub fn gg18_key_gen_3(messages: Vec<GG18KeyGenMsg2>, context: GG18KeyGenContext2
     Ok((messages_output, context3))
 }
 
-pub fn gg18_key_gen_4(messages: Vec<GG18KeyGenMsg3>, context: GG18KeyGenContext3)
--> Result<(GG18KeyGenMsg4, GG18KeyGenContext4), &'static str> {
-
+pub fn gg18_key_gen_4(
+    messages: Vec<GG18KeyGenMsg3>,
+    context: GG18KeyGenContext3,
+) -> Result<(GG18KeyGenMsg4, GG18KeyGenContext4), &'static str> {
     let mut party_shares = messages;
-    party_shares.insert(context.index as usize, context.secret_shares[context.index as usize].clone());
+    party_shares.insert(
+        context.index as usize,
+        context.secret_shares[context.index as usize].clone(),
+    );
 
     let context4 = GG18KeyGenContext4 {
         threshold: context.threshold,
@@ -224,15 +234,16 @@ pub fn gg18_key_gen_4(messages: Vec<GG18KeyGenMsg3>, context: GG18KeyGenContext3
         vss_scheme: context.vss_scheme,
         y_sum: context.y_sum,
         point_vec: context.point_vec,
-        party_shares
+        party_shares,
     };
 
     Ok((context4.vss_scheme.clone(), context4))
 }
 
-pub fn gg18_key_gen_5(messages: Vec<GG18KeyGenMsg4>, context: GG18KeyGenContext4)
--> Result<(GG18KeyGenMsg5, GG18KeyGenContext5), &'static str> {
-
+pub fn gg18_key_gen_5(
+    messages: Vec<GG18KeyGenMsg4>,
+    context: GG18KeyGenContext4,
+) -> Result<(GG18KeyGenMsg5, GG18KeyGenContext5), &'static str> {
     let params = Parameters {
         threshold: context.threshold - 1,
         share_count: context.parties,
@@ -240,7 +251,8 @@ pub fn gg18_key_gen_5(messages: Vec<GG18KeyGenMsg4>, context: GG18KeyGenContext4
     let mut vss_scheme_vec: Vec<VerifiableSS<Secp256r1>> = messages;
     vss_scheme_vec.insert(context.index as usize, context.vss_scheme.clone());
 
-    let result = context.party_keys
+    let result = context
+        .party_keys
         .phase2_verify_vss_construct_keypair_phase3_pok_dlog(
             &params,
             &context.point_vec,
@@ -250,7 +262,7 @@ pub fn gg18_key_gen_5(messages: Vec<GG18KeyGenMsg4>, context: GG18KeyGenContext4
         );
 
     if result.is_err() {
-        return Err("invalid vss")
+        return Err("invalid vss");
     }
 
     let (shared_keys, dlog_proof) = result.unwrap();
@@ -265,15 +277,16 @@ pub fn gg18_key_gen_5(messages: Vec<GG18KeyGenMsg4>, context: GG18KeyGenContext4
         y_sum: context.y_sum,
         point_vec: context.point_vec,
         shared_keys,
-        dlog_proof
+        dlog_proof,
     };
 
     Ok((context5.dlog_proof.clone(), context5))
 }
 
-pub fn gg18_key_gen_6(messages: Vec<GG18KeyGenMsg5>, context: GG18KeyGenContext5)
--> Result<GG18SignContext, &'static str> {
-
+pub fn gg18_key_gen_6(
+    messages: Vec<GG18KeyGenMsg5>,
+    context: GG18KeyGenContext5,
+) -> Result<GG18SignContext, &'static str> {
     let params = Parameters {
         threshold: context.threshold - 1,
         share_count: context.parties,
@@ -285,7 +298,7 @@ pub fn gg18_key_gen_6(messages: Vec<GG18KeyGenMsg5>, context: GG18KeyGenContext5
 
     let result = Keys::verify_dlog_proofs(&params, &dlog_proof_vec, &context.point_vec);
     if result.is_err() {
-        return Err("bad dlog proof")
+        return Err("bad dlog proof");
     }
 
     let paillier_key_vec = (0..params.share_count)
