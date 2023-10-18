@@ -59,7 +59,7 @@ pub struct GG18KeyGenContext3 {
     index: u16,
     party_keys: Keys,
     bc1_vec: Vec<KeyGenBroadcastMessage1>,
-    vss_scheme: VerifiableSS<Secp256r1>,
+    vss_scheme: VerifiableSS<Secp256r1, Sha256>,
     secret_shares: Vec<Scalar<Secp256r1>>,
     y_sum: Point<Secp256r1>,
     point_vec: Vec<Point<Secp256r1>>,
@@ -74,13 +74,13 @@ pub struct GG18KeyGenContext4 {
     index: u16,
     party_keys: Keys,
     bc1_vec: Vec<KeyGenBroadcastMessage1>,
-    vss_scheme: VerifiableSS<Secp256r1>,
+    vss_scheme: VerifiableSS<Secp256r1, Sha256>,
     y_sum: Point<Secp256r1>,
     point_vec: Vec<Point<Secp256r1>>,
     party_shares: Vec<Scalar<Secp256r1>>,
 }
 
-pub type GG18KeyGenMsg4 = VerifiableSS<Secp256r1>;
+pub type GG18KeyGenMsg4 = VerifiableSS<Secp256r1, Sha256>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GG18KeyGenContext5 {
@@ -89,7 +89,7 @@ pub struct GG18KeyGenContext5 {
     index: u16,
     party_keys: Keys,
     bc1_vec: Vec<KeyGenBroadcastMessage1>,
-    vss_scheme_vec: Vec<VerifiableSS<Secp256r1>>,
+    vss_scheme_vec: Vec<VerifiableSS<Secp256r1, Sha256>>,
     y_sum: Point<Secp256r1>,
     point_vec: Vec<Point<Secp256r1>>,
     shared_keys: SharedKeys,
@@ -103,7 +103,7 @@ pub struct GG18SignContext {
     pub threshold: u16,
     pub index: u16,
     pub party_keys: Keys,
-    pub vss_scheme_vec: Vec<VerifiableSS<Secp256r1>>,
+    pub vss_scheme_vec: Vec<VerifiableSS<Secp256r1, Sha256>>,
     pub shared_keys: SharedKeys,
     pub paillier_key_vec: Vec<EncryptionKey>,
     pub pk: Point<Secp256r1>,
@@ -248,7 +248,7 @@ pub fn gg18_key_gen_5(
         threshold: context.threshold - 1,
         share_count: context.parties,
     };
-    let mut vss_scheme_vec: Vec<VerifiableSS<Secp256r1>> = messages;
+    let mut vss_scheme_vec: Vec<VerifiableSS<Secp256r1, Sha256>> = messages;
     vss_scheme_vec.insert(context.index as usize, context.vss_scheme.clone());
 
     let result = context
